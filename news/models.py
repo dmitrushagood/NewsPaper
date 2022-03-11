@@ -27,8 +27,6 @@ class Author(models.Model):
         # сохраняем результаты в базу данных
         self.save()
 
-    def __str__(self):
-        return f'{self.user}. Рейтинг: {self.user_rate}'
 
 class Category(models.Model):
     name_category = models.CharField(max_length=52, unique=True)
@@ -71,8 +69,6 @@ class Post(models.Model):
         size = 124 if len(self.text) > 124 else len(self.text)
         return self.text[:size] + '...'
 
-    def __str__(self):
-        return f'{self.title}, рейтинг: {self.post_rate}'
 
 class PostCategory(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
