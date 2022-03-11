@@ -1,7 +1,8 @@
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Sum
+from allauth.account.forms import SignupForm
+from django.contrib.auth.models import Group
 
 
 class Author(models.Model):
@@ -27,6 +28,9 @@ class Author(models.Model):
         # сохраняем результаты в базу данных
         self.save()
 
+    def __str__(self):
+        return f'{self.user}. Рейтинг: {self.user_rate}'
+
 
 class Category(models.Model):
     name_category = models.CharField(max_length=52, unique=True)
@@ -34,17 +38,6 @@ class Category(models.Model):
 
 class Post(models.Model):
     post = models.ForeignKey(Author, on_delete=models.CASCADE)  # связь «один ко многим» с моделью Author;
-
-    article = 'AR'
-    news = 'NE'
-
-    posts = [
-        (article, 'Статья'),
-        (news, 'Новость')
-    ]
-    choice = models.CharField(max_length=2,  # поле с выбором — «статья» или «новость»;
-                              choices=posts,
-                              default=news)
 
     created = models.DateTimeField(auto_now_add=True)  # автоматически добавляемая дата и время создания;
 
@@ -56,6 +49,23 @@ class Post(models.Model):
     text = models.TextField()  # текст статьи/новости;
 
     post_rate = models.IntegerField(default=0)  # рейтинг статьи/новости.
+
+    def __str__(self):
+        return f'{self.title()}: {self.text[:20]}'
+
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
+
+    article = 'AR'
+    news = 'NE'
+
+    posts = [
+        (article, 'Статья'),
+        (news, 'Новость')
+    ]
+    choice = models.CharField(max_length=2,  # поле с выбором — «статья» или «новость»;
+                              choices=posts,
+                              default=news)
 
     def like(self):
         self.post_rate += 1
@@ -89,3 +99,12 @@ class Comment(models.Model):
     def dislike(self):
         self.comment_rate -= 1
         self.save()
+
+
+class BasicSignupForm(SignupForm):
+
+    def save(self, request):
+        user = super(BasicSignupForm, self).save(request)
+        common_group = Group.objects.get(name='common')
+        common_group.user_set.add(user)
+        return user
