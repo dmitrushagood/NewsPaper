@@ -10,7 +10,8 @@ urlpatterns = [
     path('auth/', include('allauth.urls')),
     path('accounts/', include('allauth.urls')),
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', LogoutView.as_view(template_name='logout.html'), name='logout')
-
+    path('logout/', LogoutView.as_view(template_name='logout.html'), name='logout'),
+    #path('appointment/', include('appointment.urls')),
+    path('appointments/', include(('appointment.urls', 'appointments'), namespace='appointments')),
     ]
 

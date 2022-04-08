@@ -34,6 +34,23 @@ class Author(models.Model):
 
 class Category(models.Model):
     name_category = models.CharField(max_length=52, unique=True)
+    subscribers = models.ManyToManyField(User, null=True, through='CategoryUser')
+
+    # def __str__(self):
+    #   return f'Категория {self.name_category}'
+
+    def get_subscribers_emails(self):
+        result = set()
+        for user in self.subscribers.all():
+            result.add(user.email)
+        return result
+        # subscribers = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscribed_categories')
+    # модуль D9
+
+
+class CategoryUser(models.Model):  # от Станислава
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
 class Post(models.Model):
@@ -41,8 +58,9 @@ class Post(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)  # автоматически добавляемая дата и время создания;
 
-    Post = models.ManyToManyField(Category, through='PostCategory')  # связь «многие ко многим» с моделью Category
+    #Post = models.ManyToManyField(Category, through='PostCategory')  # связь «многие ко многим» с моделью Category
     # (с дополнительной моделью PostCategory);
+    Post = models.ManyToManyField(Category, through='PostCategory') # заменил название переменной
 
     title = models.CharField(max_length=150)  # заголовок статьи/новости;
 

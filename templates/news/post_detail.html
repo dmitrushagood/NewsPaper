@@ -48,4 +48,27 @@
 </table>
 
 
+<!-- от станислава-->
+<h5>
+
+
+
+{% if request.user.is_authenticated %}
+
+<form method="POST" action="{% url 'subscriptions'%}">
+    {% csrf_token%}
+    <input type="hidden" name ='from'  value="post.html" >
+    <input type="hidden" name ="post_id"  value="{{post.id}}" >
+    {% if not user_is_subscribed %}
+    <input type='submit' value = 'подписаться' name="subscribe">
+    {% endif %}
+
+
+
+{% endif %}
+</form>
+
+
+</h5>
+
 {% endblock content %}
