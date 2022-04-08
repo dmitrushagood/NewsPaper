@@ -159,3 +159,7 @@ EMAIL_USE_SSL = True  # Яндекс использует ssl, подробне�
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER+'@yandex.ru'
 
+CELERY_BROKER_URL = 'redis://:Ваш пароль в облаке@ Ваш Public endpoint с redis/0'
+
+
+CELERY_RESULT_BACKEND = 'redis://:Ваш пароль в облаке@ Ваш Public endpoint с redis /0'
